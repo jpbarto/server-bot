@@ -1,0 +1,10 @@
+keep a global flag 'server_error' which can be true or false
+
+Requests to /* will respond with a 200 response code and meta information
+about the instance. If the server_error flag is set to true then instead the
+instance will provide the same response but with a 503 server error code.
+
+Requests to /health return the same as the above
+
+Requests to /stop will set the server_error flag to true
+Requests to /start will set the server error flag to false

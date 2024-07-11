@@ -1,0 +1,10 @@
+Simple Server is a simple, do nothing HTTP server which responds with a 200
+HTTP response code and information about its environment (such as server
+version, response headers, hosting IP address, operating system, etc). 
+
+The server can be configured to simulate a failure where, when a URL is
+invoked such as '/stop' the server will afterward respond with a 503 internal
+server error response until the '/start' url is invoked.
+
+Simple Server also responds to '/health' with a 200 response including
+information about request processing time.
