@@ -44,11 +44,35 @@ def create_app(test_config=None):
     def server_response(rqst_path):
 
         # if this is an AWS EC2 instance get its metadata
-        instance_id = None
+        ec2_metadata = {}
         try:
             response = requests.get('http://169.254.169.254/latest/meta-data/instance-id',
-                                timeout = (0.5, 0.5))
-            instance_id = response.text
+                                    timeout = (0.5, 0.5))
+            ec2_metadata['instance_id'] = response.text
+
+            response = requests.get('http://169.254.169.254/latest/meta-data/local-hostname', 
+                                    timeout = (0.5, 0.5))
+            ec2_metadata['local_hostname'] = response.text
+
+            response = requests.get('http://169.254.169.254/latest/meta-data/local-ipv4', 
+                                    timeout = (0.5, 0.5))
+            ec2_metadata['local_ipv4'] = response.text
+
+            response = requests.get('http://169.254.169.254/latest/meta-data/public-hostname', 
+                                    timeout = (0.5, 0.5))
+            ec2_metadata['public_hostname'] = response.text
+
+            response = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4', 
+                                    timeout = (0.5, 0.5))
+            ec2_metadata['public_ipv4'] = response.text
+
+            response = requests.get('http://169.254.169.254/latest/meta-data/placement/region', 
+                                    timeout = (0.5, 0.5))
+            ec2_metadata['region'] = response.text
+
+            response = requests.get('http://169.254.169.254/latest/meta-data/placement/availability-zone', 
+                                    timeout = (0.5, 0.5))
+            ec2_metadata['availability_zone'] = response.text
         except:
             print ("Request for EC2 metadata failed")
 
@@ -59,7 +83,7 @@ def create_app(test_config=None):
                     "os": os.name,
                     "uname": os.uname (),
                     "hostname": socket.gethostname (),
-                    "EC2 Instance ID": instance_id,
+                    "EC2 metadata": ec2_metadata,
                     "error": error_flag}
         response_str = '<html><body><pre>' + json.dumps (response, indent=4) +'</pre></body></html>'
         if error_flag:
