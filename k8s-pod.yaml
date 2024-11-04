@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: server-bot
+spec:
+  containers:
+    - name: bot
+      image: ghcr.io/jpbarto/server-bot:latest
+      ports:
+        - containerPort: 8080
