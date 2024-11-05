@@ -6,7 +6,7 @@ import requests
 from flask import Flask, Response, request
 
 error_flag = False
-BOT_VERSION = '0.0.1'
+BOT_VERSION = '0.0.2'
 
 def create_app(test_config=None):
     # create and configure the app
@@ -84,6 +84,7 @@ def create_app(test_config=None):
                     "uname": os.uname (),
                     "hostname": socket.gethostname (),
                     "EC2 metadata": ec2_metadata,
+                    "Environment": os.environ,
                     "error": error_flag}
         response_str = '<html><body><pre>' + json.dumps (response, indent=4) +'</pre></body></html>'
         if error_flag:
