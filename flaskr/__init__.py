@@ -84,7 +84,7 @@ def create_app(test_config=None):
                     "uname": os.uname (),
                     "hostname": socket.gethostname (),
                     "EC2 metadata": ec2_metadata,
-                    "Environment": os.environ,
+                    "Environment": dict(os.environ),
                     "error": error_flag}
         response_str = '<html><body><pre>' + json.dumps (response, indent=4) +'</pre></body></html>'
         if error_flag:
