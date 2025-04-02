@@ -6,7 +6,7 @@ import requests
 from flask import Flask, Response, request
 
 error_flag = False
-BOT_VERSION = '0.0.2'
+BOT_VERSION = os.environ.get ('BOT_VERSION', '0.0.2')
 
 def create_app(test_config=None):
     # create and configure the app
