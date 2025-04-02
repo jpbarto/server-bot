@@ -22,7 +22,10 @@ spec:
     spec:
       containers:
         - name: server-bot-app
-          image: jpbarto/server-bot:v1
+          image: jpbarto/server-bot:v2
+          env:
+            - name: BOT_VERSION
+              value: 'v1.0.2'
           ports:
             - containerPort: 5000
               name: server-bot-port
