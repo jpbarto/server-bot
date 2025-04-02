@@ -6,7 +6,7 @@ import requests
 from flask import Flask, Response, request, jsonify
 
 error_flag = False
-BOT_VERSION = os.environ.get ('BOT_VERSION', '0.0.2')
+BOT_VERSION = os.environ.get ('BOT_VERSION', '0.0.3')
 
 def create_app(test_config=None):
     # create and configure the app
@@ -72,6 +72,7 @@ def create_app(test_config=None):
         response = {
                     "Request method": request.method,
                     "Request path": request.path,
+                    "Request header keys": [],
                     "Server Bot Version": BOT_VERSION,
                     "os": os.name,
                     "uname": os.uname (),
@@ -80,9 +81,12 @@ def create_app(test_config=None):
                     "Environment": dict(os.environ),
                     "error": error_flag}
 
+        for header_key in request.headers.keys ():
+            response['Request header keys'].append (header_key)
+
         accept_header = request.headers.get('Accept')
 
-        if 'application/json' in accept_header:
+        if accept_header is not None and 'application/json' in accept_header:
             if error_flag:
                 return jsonify (response), 500
             else:
