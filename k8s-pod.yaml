@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: server-bot-app
-          image: ghcr.io/jpbarto/server-bot:latest
+          image: jpbarto/server-bot:v1
           ports:
             - containerPort: 5000
               name: server-bot-port
