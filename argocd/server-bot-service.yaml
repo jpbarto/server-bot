@@ -1,37 +1,5 @@
 ---
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: server-bot
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  namespace: server-bot
-  name: server-bot-deployment
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: server-bot-app
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: server-bot-app
-    spec:
-      containers:
-        - name: server-bot-app
-          image: jpbarto/server-bot:v2
-          env:
-            - name: BOT_VERSION
-              value: 'v1.0.2'
-          ports:
-            - containerPort: 5000
-              name: server-bot-port
-
----
-apiVersion: v1
 kind: Service
 metadata:
   namespace: server-bot
@@ -39,7 +7,7 @@ metadata:
 spec:
   selector:
     app.kubernetes.io/name: server-bot-app
-  type: NodePort
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80
