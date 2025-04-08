@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Enforce change window
 
 on:
   pull_request:
