@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: bennycode/stop-mergin@v0.1.3
+    - uses: bennycode/stop-merging@v0.1.3
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GIT_BRANCH: 'block-pr'
