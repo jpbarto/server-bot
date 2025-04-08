@@ -1,0 +1,17 @@
+name: Docker Image CI
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+
+  block-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: bennycode/stop-mergin@v0.1.3
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GIT_BRANCH: 'block-pr'
+        BYPASS_PREFIX: 'hotfix'
