@@ -9,12 +9,15 @@ on:
 
 jobs:
   Audit-Pull-Request:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/github-script@v6
         with:
           script: |
+            console.log (context)
+
             const requiredLabels = ['no release notes', 'public release notes'];
             let labels = [];
 
@@ -23,6 +26,13 @@ jobs:
             } else if (context.payload.issue) {
               labels = context.payload.issue.labels;
             }
+
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['ChangeFreeze']
+            })
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
