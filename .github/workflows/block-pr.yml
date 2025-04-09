@@ -24,28 +24,13 @@ jobs:
               labels = context.payload.issue.labels;
             }
 
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'This has been blocked by GH Actions'
+            })
+
             if (labels.filter(l => requiredLabels.includes(l.name)).length === 0) {
               throw new Error(`Required labels: ${requiredLabels.join(', ')}`);
             }
-
-  pr-status:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: GrantBirki/pr-status@v1.2.2
-        id: pr-status
-        with:
-          evaluations: approved # evaluate the given PR against the approved attribute
-          pass_labels: ready-for-deployment # if the PR is approved (evaluation passes), apply the ready-for-deployment label
-          fail_labels: pr-out-of-hours
-      
-      # view some extra outputs the action sets
-      # your workflow can now run separate logic based on these outputs
-      - name: outputs
-        run: |
-          echo "approved: ${{ steps.pr-status.outputs.approved }}"
-          echo "total approvals ${{ steps.pr-status.outputs.total_approvals }}"
-          echo "evaluation ${{ steps.pr-status.outputs.evaluation }}"
-          echo "merge state status ${{ steps.pr-status.outputs.merge_state_status }}"
-          echo "commit status ${{ steps.pr-status.outputs.commit_status }}"
-          echo "review decision ${{ steps.pr-status.outputs.review_decision }}"
