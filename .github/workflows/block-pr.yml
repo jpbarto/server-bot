@@ -8,43 +8,44 @@ on:
       - 'block-2/*'
 
 jobs:
-
-  no_morning_merge:
-    name: Out of Hours Check
+  Audit-Pull-Request:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - uses: actions/github-script@v6
         with:
-          python-version: 3.9
+          script: |
+            const requiredLabels = ['no release notes', 'public release notes'];
+            let labels = [];
 
-      - name: Block merge during specified times
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TIMEZONE: "Europe/London"
-          RESTRICTED_TIMES: >
-            {
-              "weekly": [
-                {
-                  "days": ["mon", "tue", "wed", "thu", "fri"],
-                  "intervals": [[0, 7], [16.5, 24]]
-                }
-              ],
-              "dates": [
-                {
-                  "date": "2023-12-25",
-                  "intervals": [[0, 24]]
-                }
-              ],
-              "holidays": {
-                "country": "GB",
-                "state": "UK",
-                "intervals": [[0, 24]]
-              }
+            if (context.payload.pull_request) {
+              labels = context.payload.pull_request.labels;
+            } else if (context.payload.issue) {
+              labels = context.payload.issue.labels;
             }
-          CUSTOM_MESSAGE: "⚠️ **PR merging is not allowed outside business hours. Let's not be a cowboy!** ⚠️"
-        run: no-weekend-merge
+
+            if (labels.filter(l => requiredLabels.includes(l.name)).length === 0) {
+              throw new Error(`Required labels: ${requiredLabels.join(', ')}`);
+            }
+
+  pr-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: GrantBirki/pr-status@v1.2.2
+        id: pr-status
+        with:
+          evaluations: approved # evaluate the given PR against the approved attribute
+          pass_labels: ready-for-deployment # if the PR is approved (evaluation passes), apply the ready-for-deployment label
+          fail_labels: pr-out-of-hours
+      
+      # view some extra outputs the action sets
+      # your workflow can now run separate logic based on these outputs
+      - name: outputs
+        run: |
+          echo "approved: ${{ steps.pr-status.outputs.approved }}"
+          echo "total approvals ${{ steps.pr-status.outputs.total_approvals }}"
+          echo "evaluation ${{ steps.pr-status.outputs.evaluation }}"
+          echo "merge state status ${{ steps.pr-status.outputs.merge_state_status }}"
+          echo "commit status ${{ steps.pr-status.outputs.commit_status }}"
+          echo "review decision ${{ steps.pr-status.outputs.review_decision }}"
