@@ -3,6 +3,9 @@ name: Enforce change window
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
+    paths:
+      - 'block-1/*'
+      - 'block-2/*'
 
 jobs:
 
