@@ -9,12 +9,42 @@ on:
 
 jobs:
 
-  block-pr:
+  no_morning_merge:
+    name: Out of Hours Check
     runs-on: ubuntu-latest
-
+    timeout-minutes: 2
     steps:
-    - uses: bennycode/stop-merging@v0.1.3
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GIT_BRANCH: 'block-pr'
-        BYPASS_PREFIX: 'hotfix'
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Block merge during specified times
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TIMEZONE: "Europe/London"
+          RESTRICTED_TIMES: >
+            {
+              "weekly": [
+                {
+                  "days": ["mon", "tue", "wed", "thu", "fri"],
+                  "intervals": [[0, 7], [16.5, 24]]
+                }
+              ],
+              "dates": [
+                {
+                  "date": "2023-12-25",
+                  "intervals": [[0, 24]]
+                }
+              ],
+              "holidays": {
+                "country": "GB",
+                "state": "UK",
+                "intervals": [[0, 24]]
+              }
+            }
+          CUSTOM_MESSAGE: "⚠️ **PR merging is not allowed outside business hours. Let's not be a cowboy!** ⚠️"
+        run: no-morning-merge
