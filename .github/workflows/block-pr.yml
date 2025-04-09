@@ -47,4 +47,4 @@ jobs:
               }
             }
           CUSTOM_MESSAGE: "⚠️ **PR merging is not allowed outside business hours. Let's not be a cowboy!** ⚠️"
-        run: no-morning-merge
+        run: no-weekend-merge
