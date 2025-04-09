@@ -33,9 +33,9 @@ jobs:
             endDate.setMinutes(endTime.split(":")[1]);
             endDate.setSeconds(endTime.split(":")[2]);
 
-            valid = startDate < currentDate && endDate > currentDate
+            freezeFlag = startDate < currentDate && endDate > currentDate
 
-            if (! valid) {
+            if (! freezeFlag) {
               return 'pass'
             }
 
@@ -52,3 +52,5 @@ jobs:
               repo: context.repo.repo,
               body: 'This has been blocked by GH Actions'
             })
+
+            throw new Error(`PR stopped due to change freeze ${startDate}`);
