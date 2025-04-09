@@ -18,8 +18,8 @@ jobs:
           script: |
             console.log (context)
 
-            var startTime = '00:00:10';
-            var endTime = '09:00:00';
+            var startTime = '09:00:10';
+            var endTime = '19:00:00';
 
             currentDate = new Date()
 
